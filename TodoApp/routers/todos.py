@@ -10,6 +10,7 @@ from ..database import SessionLocal
 from .auth import get_current_user
 from starlette.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
+from ..services import rag_service
 
 templates = Jinja2Templates(directory="TodoApp/templates")
 
@@ -132,6 +133,15 @@ async def create_todo(user: user_dependency,db: db_dependency, todo_request: Tod
     todo_model = Todos(**todo_request.model_dump(),owner_id = user.get('id'))
     db.add(todo_model)
     db.commit()
+    db.refresh(todo_model)
+    rag_service.upsert_task(
+        task_id=todo_model.id,
+        title=todo_model.title,
+        description=todo_model.description,
+        priority=todo_model.priority,
+        complete=todo_model.complete,
+        user_id=user.get('id')
+    )
 
 @router.put("/todo/{todo_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def update_todo(user: user_dependency,db: db_dependency,todo_request: TodoRequest, todo_id: int= Path(gt=0)):
@@ -147,6 +157,37 @@ async def update_todo(user: user_dependency,db: db_dependency,todo_request: Todo
     todo_model.complete = todo_request.complete
     db.add(todo_model)
     db.commit()
+    db.refresh(todo_model)
+    rag_service.upsert_task(
+        task_id=todo_model.id,
+        title=todo_model.title,
+        description=todo_model.description,
+        priority=todo_model.priority,
+        complete=todo_model.complete,
+        user_id=user.get('id')
+    )
+
+@router.patch("/todo/{todo_id}/toggle", status_code=status.HTTP_200_OK)
+async def toggle_todo_complete(user: user_dependency, db: db_dependency, todo_id: int = Path(gt=0)):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Failed Authentication.")
+    todo_model = db.query(Todos).filter(Todos.id == todo_id)\
+        .filter(Todos.owner_id == user.get('id')).first()
+    if todo_model is None:
+        raise HTTPException(status_code=404, detail="Not found.")
+    todo_model.complete = not todo_model.complete
+    db.add(todo_model)
+    db.commit()
+    db.refresh(todo_model)
+    rag_service.upsert_task(
+        task_id=todo_model.id,
+        title=todo_model.title,
+        description=todo_model.description,
+        priority=todo_model.priority,
+        complete=todo_model.complete,
+        user_id=user.get('id')
+    )
+    return {"id": todo_model.id, "complete": todo_model.complete}
 
 @router.delete("/todo/{todo_id}",status_code=status.HTTP_204_NO_CONTENT)
 async def delete_todo(user:user_dependency,db: db_dependency,todo_id: int = Path(gt=0)):
@@ -159,3 +200,4 @@ async def delete_todo(user:user_dependency,db: db_dependency,todo_id: int = Path
        raise HTTPException(status_code=404, detail="Not found.")
     db.query(Todos).filter(Todos.id == todo_id).delete()
     db.commit()
+    rag_service.delete_task(task_id=todo_id, user_id=user.get('id'))

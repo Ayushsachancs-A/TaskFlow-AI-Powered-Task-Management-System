@@ -1,32 +1,65 @@
-<div>
-  <nav class="navbar navbar-expand-md navbar-dark main-color fixed-top">
-    <a class="navbar-brand" href="#">Todo App</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        {% if user %}
-        <li class="nav-item active">
-          <a class="nav-link" href="/todos/todo-page">Home</a>
-        </li>
-        {% endif %}
-      </ul>
+<header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center justify-between h-16">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-3">
+                <a href="/todos/todo-page" class="flex items-center gap-2.5 group">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+                        <i data-lucide="check-check" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <span class="text-lg font-bold tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">TaskFlow</span>
+                        <span class="inline-flex items-center px-1.5 py-0.2 rounded-md text-[10px] font-bold bg-brand-50 text-brand-700 border border-brand-200/60 ml-1">AI RAG</span>
+                    </div>
+                </a>
+            </div>
 
-      <ul class="navbar-nav ml-auto">
-        {% if user %}
-        <li class="nav-item m-1">
-          <a type="button" class="btn btn-outline-light text-white" onclick="logout()">Logout</a>
-        </li>
-        {% endif %}
-      </ul>
+            <!-- Center Navigation / Quick Actions -->
+            <div class="hidden md:flex items-center gap-2">
+                {% if user %}
+                <a href="/todos/todo-page" class="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-brand-600 hover:bg-slate-100 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Dashboard</span>
+                </a>
+                <button onclick="triggerBriefingModal()" class="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-indigo-600 hover:bg-indigo-50 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+                    <span>AI Briefing</span>
+                </button>
+                <button onclick="toggleAiDrawer()" class="px-3.5 py-2 rounded-lg text-sm font-medium text-slate-700 hover:text-brand-600 hover:bg-brand-50 transition-colors flex items-center gap-1.5">
+                    <i data-lucide="bot" class="w-4 h-4 text-brand-600"></i>
+                    <span>Copilot</span>
+                </button>
+                {% endif %}
+            </div>
+
+            <!-- Right Actions & User Menu -->
+            <div class="flex items-center gap-3">
+                {% if user %}
+                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+                    <!-- User Avatar Chip -->
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-500 to-purple-600 flex items-center justify-center text-white font-semibold text-xs shadow-sm">
+                            {{ (user.username or 'U')[:1] | upper }}
+                        </div>
+                        <div class="hidden sm:block text-left">
+                            <div class="text-xs font-semibold text-slate-800 leading-tight">{{ user.username }}</div>
+                            <div class="text-[10px] text-slate-500 font-medium">{{ user.user_role or 'Member' }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Logout Button -->
+                    <button onclick="logout()" title="Sign out" class="p-2 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 transition-colors flex items-center gap-1 text-xs font-medium">
+                        <i data-lucide="log-out" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Logout</span>
+                    </button>
+                </div>
+                {% else %}
+                <div class="flex items-center gap-2">
+                    <a href="/auth/login-page" class="px-4 py-2 text-sm font-medium text-slate-700 hover:text-brand-600 transition-colors">Sign in</a>
+                    <a href="/auth/register-page" class="px-4 py-2 rounded-xl text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white shadow-sm shadow-brand-500/20 transition-all">Get Started</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-  </nav>
-</div>
-
-
-
-
-
-
+</header>

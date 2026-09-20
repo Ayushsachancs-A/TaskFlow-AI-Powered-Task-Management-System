@@ -1,20 +1,115 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full bg-slate-50">
 <head>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',path='/css/base.css')}}">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',path='/css/bootstrap.css')}}">
     <meta charset="UTF-8">
-    <title>TodoApp</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskFlow AI - Modern RAG Task Management{% endblock %}</title>
+    
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            200: '#c7d2fe',
+                            300: '#a5b4fc',
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            800: '#3730a3',
+                            900: '#312e81',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Marked.js for Markdown Rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <style>
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        .strike-through-text {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+        
+        /* Smooth drawer animation */
+        .drawer-transition {
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+    </style>
 </head>
-<body>
+<body class="h-full flex flex-col font-sans text-slate-800 antialiased bg-slate-50/50">
 
-   {% include 'navbar.html' %}
-   {% block content %}
+    <!-- Global Toast Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
-    {% endblock %}
-       <script src="{{ url_for('static',path='/js/jquery-slim.js') }}"></script>
-       <script src="{{ url_for('static',path='/js/popper.js') }}"></script>
-       <script src="{{ url_for('static',path='/js/bootstrap.js') }}"></script>
-       <script src="{{ url_for('static',path='/js/base.js') }}" defer></script>
+    <!-- Navigation Header -->
+    {% include 'navbar.html' %}
+
+    <!-- Main Content Body -->
+    <main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full border-t border-slate-200/80 bg-white/60 backdrop-blur-sm py-4 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-2">
+            <div class="flex items-center gap-2">
+                <span class="inline-flex items-center gap-1 font-semibold text-brand-600">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> TaskFlow RAG Copilot
+                </span>
+                <span>• FastAPI + SQLite + ChromaDB</span>
+            </div>
+            <div>
+                <span>Multi-Tenant User Isolated RAG System</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- App JS -->
+    <script src="{{ url_for('static', path='/js/base.js') }}"></script>
+    <script>
+        // Initialize Lucide icons
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
 </body>
 </html>

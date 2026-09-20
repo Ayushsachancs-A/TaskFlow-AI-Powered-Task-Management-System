@@ -1,1 +1,27 @@
+# Virtual Environment
 /fastapienv/
+venv/
+.venv/
+env/
+
+# Python cache & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environment Variables & Secrets
+.env
+
+# Local Databases & Vector Store
+*.db
+*.sqlite3
+chroma_db/
+testdb.db
+todoapp.db
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

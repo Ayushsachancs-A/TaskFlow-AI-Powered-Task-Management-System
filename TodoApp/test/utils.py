@@ -34,6 +34,9 @@ client = TestClient(app)
 
 @pytest.fixture
 def test_todo():
+    with engine.connect() as connection:
+        connection.execute(text("DELETE FROM todos;"))
+        connection.commit()
     todo = Todos(
         title='Learn to code',
         description='Need to learn everyday',
