@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: taskflow-ai
+    runtime: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn TodoApp.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SQLALCHEMY_DATABASE_URL
+        value: sqlite:///./todoapp.db
+      - key: CHROMA_PERSIST_DIR
+        value: ./chroma_db
+      - key: ALGORITHM
+        value: HS256
+      - key: SECRET_KEY
+        generateValue: true
+      - key: OPENAI_BASE_URL
+        value: https://api.groq.com/openai/v1
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: llama-3.3-70b-versatile
